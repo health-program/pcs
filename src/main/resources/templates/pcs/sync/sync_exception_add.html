@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="/pcs/header" />
+
+<body>
+    
+    <section class="content-header">
+        <h1>同步异常</h1>
+        <ol class="breadcrumb">
+            <li><a href="/pcs/sync/exception/index"><i class="fa fa-table"></i>列表</a></li>
+            <li class="active">新增</li>
+        </ol>
+    </section>
+    <section class="content">
+    </section>
+    <div class="col-sm-2 col-sm-offset-5 btn-back">
+    	<a href="/pcs/sync/exception/index" class="btn btn-primary btn-block">返回</a>
+    </div>
+    <div th:include="/pcs/footer" />
+    <script type="text/javascript">
+    var options = {
+        id: "model",
+        cancelBtn: false,
+        name: "新增",
+        url:"/pcs/sync/exception/save",
+        columns: [
+				{ title: "同步目标", name: "syncTarget", required: "required", inputType: "TEXT" },
+				{ title: "同步内容", name: "syncContent", required: "required", inputType: "TEXT" },
+				{ title: "同步时间", name: "syncTime", required: "required", inputType: "DATE" },
+				{ title: "异常内容", name: "exception", required: "required", inputType: "TEXT" }
+				]
+    }
+
+    $(function() {       
+        var html = generateEditHtml(options);
+        $(".content").html(html);
+       	$.initComponment($(".content"));
+        
+        var model = new tonto.Model("model", options.columns, {
+            pattern:"edit",
+            successCallback:function(){
+                $.successAlert("保存成功",function(){
+                    window.location = "/pcs/sync/exception/index";
+                });
+            }
+        });
+        model.setData(null);
+    });
+    </script>
+</body>
+
+</html>

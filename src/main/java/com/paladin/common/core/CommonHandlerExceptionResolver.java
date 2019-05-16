@@ -23,7 +23,6 @@ public class CommonHandlerExceptionResolver implements HandlerExceptionResolver 
 
 	@Override
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-		ex.printStackTrace();
 		if (handler instanceof HandlerMethod) {
 			HandlerMethod handlerMethod = (HandlerMethod) handler;
 			if (handlerMethod.getMethodAnnotation(ResponseBody.class) != null) {

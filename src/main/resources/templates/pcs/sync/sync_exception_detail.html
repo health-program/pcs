@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="/pcs/header" />
+
+<body>
+    
+    <section class="content-header">
+        <h1>同步异常</h1>
+        <ol class="breadcrumb">
+            <li><a href="/pcs/sync/exception/index"><i class="fa fa-list-alt"></i>列表</a></li>
+            <li class="active">详情</li>
+        </ol>
+    </section>
+    <section class="content">
+    </section>
+    <div class="col-sm-2 col-sm-offset-5 btn-back">
+    	<a href="/pcs/sync/exception/index" class="btn btn-primary btn-block">返回</a>
+    </div>
+    <input type="hidden" id="id" th:value="${id}"/>
+    <div th:include="/pcs/footer" />
+    <script type="text/javascript">
+
+    $(function() {
+    	var options = {
+	        id: "model",
+	        name: "详情",
+	        url:"/pcs/sync/exception/update?id="+$("#id").val(),
+	        columns: [
+				{ title: "同步目标", name: "syncTarget", required: "required", inputType: "TEXT" },
+				{ title: "同步内容", name: "syncContent", required: "required", inputType: "TEXT" },
+				{ title: "同步时间", name: "syncTime", required: "required", inputType: "DATE" },
+				{ title: "异常内容", name: "exception", required: "required", inputType: "TEXT" }
+				]
+	    }
+    
+        $.getAjax("/pcs/sync/exception/get?id="+$("#id").val(), function(data) {
+            var html = generateHtml(options);
+            $(".content").html(html);
+            $.initComponment($(".content"));
+           
+            var model = new tonto.Model("model", options.columns);
+            model.setData(data);
+        });
+    });
+    </script>
+</body>
+
+</html>
