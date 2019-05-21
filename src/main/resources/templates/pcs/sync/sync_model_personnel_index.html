@@ -6,7 +6,7 @@
 <body>
     
     <section class="content-header">
-        <h1>同步目标</h1>
+        <h1>同步人员模块</h1>
     </section>
     <section class="content">
         <div class="box box-solid">
@@ -50,10 +50,12 @@
             idField: "id",
             columns: [
                 [
-                    					{ title: "同步数据库密码", field: "password" },
-					{ title: "同步优先级", field: "priorityLevel" },
-					{ title: "同步数据库地址", field: "url" },
-					{ title: "同步数据库用户名", field: "username" },
+                    					{ title: "身份证域", field: "identificationIdField" },
+					{ title: "密码域", field: "passwordField" },
+					{ title: "更新时间域", field: "updateTimeField" },
+					{ title: "状态域", field: "statusField" },
+					{ title: "sql", field: "sql" },
+					{ title: "账号域", field: "accountField" },
                     {
                         title: "操作",
                         align: "center",
@@ -74,9 +76,9 @@
                     }
                 ]
             ],
-            url: '/pcs/sync/target/find/page',
+            url: '/pcs/sync/model/personnel/find/page',
             searchbar: '#searchbar',
-            exportUrl: '/pcs/sync/target/export',
+            exportUrl: '/pcs/sync/model/personnel/export',
             showExport: true,
             showColumns: true,
             pagination: true,
@@ -86,17 +88,17 @@
     }
 
     function add() {
-        window.location = '/pcs/sync/target/add';
+        window.location = '/pcs/sync/model/personnel/add';
     }
 
     function detail(row) {
-        window.location = '/pcs/sync/target/detail' + (row ? ('?id=' + row.id) : '');
+        window.location = '/pcs/sync/model/personnel/detail' + (row ? ('?id=' + row.id) : '');
     }
 
     function remove(row) {
         if (row) {
             layer.confirm('确定删除吗?', function() {
-                $.getAjax('/pcs/sync/target/delete?id=' + row.id, function() {
+                $.getAjax('/pcs/sync/model/personnel/delete?id=' + row.id, function() {
                     $.successMessage("删除成功");
                     table.refresh();
                 });

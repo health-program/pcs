@@ -11,6 +11,9 @@ public class SyncException {
 
 	// 同步目标
 	private String syncTarget;
+	
+	// 同步模块
+	private String syncModel;
 
 	// 同步内容
 	private String syncContent;
@@ -70,6 +73,14 @@ public class SyncException {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public String getSyncModel() {
+		return syncModel;
+	}
+
+	public void setSyncModel(String syncModel) {
+		this.syncModel = syncModel;
 	}
 
 }

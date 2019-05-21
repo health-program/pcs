@@ -6,16 +6,16 @@
 <body>
     
     <section class="content-header">
-        <h1>同步目标</h1>
+        <h1>同步人员模块</h1>
         <ol class="breadcrumb">
-            <li><a href="/pcs/sync/target/index"><i class="fa fa-table"></i>列表</a></li>
+            <li><a href="/pcs/sync/model/personnel/index"><i class="fa fa-table"></i>列表</a></li>
             <li class="active">新增</li>
         </ol>
     </section>
     <section class="content">
     </section>
     <div class="col-sm-2 col-sm-offset-5 btn-back">
-    	<a href="/pcs/sync/target/index" class="btn btn-primary btn-block">返回</a>
+    	<a href="/pcs/sync/model/personnel/index" class="btn btn-primary btn-block">返回</a>
     </div>
     <div th:include="/pcs/footer" />
     <script type="text/javascript">
@@ -23,12 +23,14 @@
         id: "model",
         cancelBtn: false,
         name: "新增",
-        url:"/pcs/sync/target/save",
+        url:"/pcs/sync/model/personnel/save",
         columns: [
-				{ title: "同步数据库地址", name: "url", required: "required", inputType: "TEXT" },
-				{ title: "同步数据库用户名", name: "username", required: "required", inputType: "TEXT" },
-				{ title: "同步数据库密码", name: "password", required: "required", inputType: "TEXT" },
-				{ title: "同步优先级", name: "priorityLevel", inputType: "TEXT" }
+				{ title: "sql", name: "sql", required: "required", inputType: "TEXT" },
+				{ title: "身份证域", name: "identificationIdField", inputType: "TEXT" },
+				{ title: "账号域", name: "accountField", inputType: "TEXT" },
+				{ title: "密码域", name: "passwordField", inputType: "TEXT" },
+				{ title: "更新时间域", name: "updateTimeField", inputType: "TEXT" },
+				{ title: "状态域", name: "statusField", inputType: "TEXT" }
 				]
     }
 
@@ -41,7 +43,7 @@
             pattern:"edit",
             successCallback:function(){
                 $.successAlert("保存成功",function(){
-                    window.location = "/pcs/sync/target/index";
+                    window.location = "/pcs/sync/model/personnel/index";
                 });
             }
         });

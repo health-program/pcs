@@ -1,17 +1,25 @@
 package com.paladin.pcs.service.sync.vo;
 
-import java.util.Date;
 
 public class SyncTargetVO {
 
-	// 同步目标名称
+	// 同步数据库名称
 	private String name;
 
-	// 描述
-	private String desc;
+	// 同步数据库地址
+	private String url;
 
-	// 最近一次更新时间
-	private Date lastUpdateTime;
+	// 同步数据库用户名
+	private String username;
+
+	// 同步数据库密码
+	private String password;
+
+	// 同步优先级
+	private Integer priorityLevel;
+	
+	// 启用状态
+	private Integer status;
 
 	public String getName() {
 		return name;
@@ -21,20 +29,44 @@ public class SyncTargetVO {
 		this.name = name;
 	}
 
-	public String getDesc() {
-		return desc;
+	public String getUrl() {
+		return url;
 	}
 
-	public void setDesc(String desc) {
-		this.desc = desc;
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
-	public Date getLastUpdateTime() {
-		return lastUpdateTime;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setLastUpdateTime(Date lastUpdateTime) {
-		this.lastUpdateTime = lastUpdateTime;
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Integer getPriorityLevel() {
+		return priorityLevel;
+	}
+
+	public void setPriorityLevel(Integer priorityLevel) {
+		this.priorityLevel = priorityLevel;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 }

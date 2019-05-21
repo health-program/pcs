@@ -6,7 +6,7 @@
 <body>
     
     <section class="content-header">
-        <h1>同步目标</h1>
+        <h1>同步记录</h1>
     </section>
     <section class="content">
         <div class="box box-solid">
@@ -50,10 +50,11 @@
             idField: "id",
             columns: [
                 [
-                    					{ title: "同步数据库密码", field: "password" },
-					{ title: "同步优先级", field: "priorityLevel" },
-					{ title: "同步数据库地址", field: "url" },
-					{ title: "同步数据库用户名", field: "username" },
+                    					{ title: "同步模块", field: "syncModel" },
+					{ title: "花费时间（毫秒）", field: "costTime" },
+					{ title: "同步目标", field: "syncTarget" },
+					{ title: "触发者", field: "triggerBy" },
+					{ title: "同步时间", field: "syncTime" ,formatter: "date" },
                     {
                         title: "操作",
                         align: "center",
@@ -74,9 +75,9 @@
                     }
                 ]
             ],
-            url: '/pcs/sync/target/find/page',
+            url: '/pcs/sync/record/find/page',
             searchbar: '#searchbar',
-            exportUrl: '/pcs/sync/target/export',
+            exportUrl: '/pcs/sync/record/export',
             showExport: true,
             showColumns: true,
             pagination: true,
@@ -86,17 +87,17 @@
     }
 
     function add() {
-        window.location = '/pcs/sync/target/add';
+        window.location = '/pcs/sync/record/add';
     }
 
     function detail(row) {
-        window.location = '/pcs/sync/target/detail' + (row ? ('?id=' + row.id) : '');
+        window.location = '/pcs/sync/record/detail' + (row ? ('?id=' + row.id) : '');
     }
 
     function remove(row) {
         if (row) {
             layer.confirm('确定删除吗?', function() {
-                $.getAjax('/pcs/sync/target/delete?id=' + row.id, function() {
+                $.getAjax('/pcs/sync/record/delete?id=' + row.id, function() {
                     $.successMessage("删除成功");
                     table.refresh();
                 });
