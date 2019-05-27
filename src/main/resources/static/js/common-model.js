@@ -649,7 +649,7 @@ _Model.prototype.checkEditDependency = function() {
         for (var i = 0; i < dependencies.length; i++) {
             var depend = dependencies[i],
                 dependCol = that.getColumn(depend.dependColumn);
-            var val = dependCol.editable === false ? (data ? that.data[depend.dependColumn] : null) : dependCol.fieldBuilder.getEditValue(dependCol, that);
+            var val = dependCol.editable === false ? (that.data ? that.data[depend.dependColumn] : null) : dependCol.fieldBuilder.getEditValue(dependCol, that);
 
             if (!that.isInDependencyValues(val, depend.dependValue)) {
                 isOk = false;
