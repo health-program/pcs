@@ -1,6 +1,7 @@
 package com.paladin.pcs.core.db;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -198,6 +199,40 @@ public class DBSyncContainer implements SpringContainer {
 			return container.getProcessor(name);
 		}
 		return null;
+	}
+
+	public List<Model> getModels() {
+		List<Model> models = new ArrayList<>(syncProcessorContainerMap.size());
+		for (DBSyncProcessorContainer container : syncProcessorContainerMap.values()) {
+			models.add(new Model(container.getId(), container.getName()));
+		}
+		return models;
+	}
+
+	public static class Model {
+		private String id;
+		private String name;
+
+		public Model(String id, String name) {
+			this.id = id;
+			this.name = name;
+		}
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
 	}
 
 	public static class DBSyncEnvironment {

@@ -24,7 +24,7 @@ public class SyncRecordService extends ServiceSupport<SyncRecord> implements Syn
 		record.setSyncTime(syncTime);
 		record.setCostTime(cost);
 		
-		String triggerBy = "timer";
+		String triggerBy = "system";
 		try {
 			UserSession session = UserSession.getCurrentUserSession();
 			if(session != null) {

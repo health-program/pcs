@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="/pcs/header" />
+
+<body>
+    <tt:constant enumcode="boolean-type" />
+    <section class="content-header">
+        <h1>同步定时任务管理</h1>
+        <ol class="breadcrumb">
+            <li><a href="/pcs/sync/task/index"><i class="fa fa-list-alt"></i>列表</a></li>
+            <li class="active">详情</li>
+        </ol>
+    </section>
+    <section class="content">
+    </section>
+    <div class="col-sm-2 col-sm-offset-5 btn-back">
+    	<a href="/pcs/sync/task/index" class="btn btn-primary btn-block">返回</a>
+    </div>
+    <input type="hidden" id="id" th:value="${id}"/>
+    <div th:include="/pcs/footer" />
+    <script type="text/javascript">
+
+    $(function() {
+    	var options = {
+	        id: "model",
+	        name: "详情",
+	        url:"/pcs/sync/task/update?id="+$("#id").val(),
+	        columns: [{
+                title: "同步数据库",
+                name: "name",
+                required: "required",
+                inputType: "SELECT-SERVER",
+                url: "/pcs/sync/target/find/all",
+                idField: "name",
+                nameField: "name",
+                multiple: false
+            },
+            {
+                title: "同步模块",
+                name: "model",
+                required: "required",
+                inputType: "SELECT-SERVER",
+                url: "/pcs/sync/model/get",
+                multiple: false
+            },
+            {
+                title: "年",
+                name: "year",
+                inputType: "NUMBER",
+                attr: {
+                    placeholder: "请输入同步年份，不填为每年"
+                }
+            },
+            {
+                title: "月",
+                name: "month",
+                inputType: "NUMBER",
+                attr: {
+                    placeholder: "请输入同步月份，不填为每月"
+                }
+            },
+            {
+                title: "日",
+                name: "day",
+                inputType: "NUMBER",
+                attr: {
+                    placeholder: "请输入同步日，不填为每日"
+                }
+            },
+            {
+                title: "小时",
+                name: "hour",
+                inputType: "NUMBER",
+                attr: {
+                    placeholder: "请输入同步小时，不填为每小时"
+                }
+            },
+            { title: "是否启用", name: "enabled", inputType: "RADIO", enum: "boolean-type" }
+        ]
+	    }
+    
+        $.getAjax("/pcs/sync/task/get?id="+$("#id").val(), function(data) {
+            var html = generateHtml(options);
+            $(".content").html(html);
+            $.initComponment($(".content"));
+           
+            var model = new tonto.Model("model", options.columns);
+            model.setData(data);
+        });
+    });
+    </script>
+</body>
+
+</html>

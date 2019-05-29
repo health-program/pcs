@@ -31,6 +31,11 @@ public class PersonnelSyncProcessorContainer extends AbstractDBSyncProcessorCont
 	public String getId() {
 		return ID;
 	}
+	
+	@Override
+	public String getName() {
+		return "人员账号模块";
+	}
 
 	@Override
 	public SyncModelPersonnel getProcessorConfig(DBSyncEnvironment environment) {
@@ -67,5 +72,7 @@ public class PersonnelSyncProcessorContainer extends AbstractDBSyncProcessorCont
 
 		return processor;
 	}
+
+
 
 }

@@ -12,6 +12,13 @@ public interface DBSyncProcessorContainer<T> {
 	public String getId();
 
 	/**
+	 * 获取容器名称（中文）
+	 * 
+	 * @return
+	 */
+	public String getName();
+	
+	/**
 	 * 新增环境处理
 	 * 
 	 * @param environment

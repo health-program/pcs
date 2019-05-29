@@ -4,22 +4,30 @@
 <head th:include="/pcs/header" />
 
 <body>
-    
     <section class="content-header">
-        <h1>人员同步</h1>
+        <h1>人员同步数据</h1>
     </section>
     <section class="content">
         <div class="box box-solid">
             <div class="box-body">
                 <form id="searchbar" class="form-horizontal form-search">
-                	<div class="form-group">
-	                    <div class="col-md-12">
-		                    <div class="pull-right">
-		                        <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
-		                        <button type="button" style="width:100px" class="btn btn-default" onclick="$('#searchbar').resetSearch()"><i class="fa fa-repeat"></i>重置</button>
-		                    </div>
-		                </div>
-	                </div>
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            <input name="identificationId" class="form-control" placeholder="请输入查询身份证" th:value="${query?.identificationId}" />
+                        </div>
+                        <div class="col-md-2">
+                            <input name="syncTarget" class="form-control" placeholder="请输入查询数据库" th:value="${query?.syncTarget}" />
+                        </div>
+                        <div class="col-md-2">
+                            <input name="account" class="form-control" placeholder="请输入查询账号" th:value="${query?.account}" />
+                        </div>
+                        <div class="col-md-6">
+                            <div class="pull-right">
+                                <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
+                                <button type="button" style="width:100px" class="btn btn-default" onclick="$('#searchbar').resetSearch()"><i class="fa fa-repeat"></i>重置</button>
+                            </div>
+                        </div>
+                    </div>
                     <!-- 表单仅有一个text-input时回车会提交表单，这里添加一个无用的防止回车提交 -->
                     <input type="text" style="display:none">
                 </form>
@@ -32,7 +40,6 @@
                 <table id="dataGrid"></table>
                 <div id="toolbar">
                     <div class="btn-group">
-                        <a onclick="add()" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i>新增</a>
                     </div>
                 </div>
             </div>
@@ -50,26 +57,31 @@
             idField: "id",
             columns: [
                 [
-                    					{ title: "md5密码", field: "password" },
-					{ title: "同步时间", field: "syncTime" ,formatter: "date" },
-                    {
-                        title: "操作",
-                        align: "center",
-                        width: "200px",
-                        events: {
-                            'click .detail': function(e, value, row, index) {
-                                detail(row);
-                            },
-                            'click .remove': function(e, value, row, index) {
-                                remove(row);
-                            }
-                        },
-                        formatter: function operateFormatter(value, row, index) {
-                            return '<button class="detail btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>详情</button>' +
-                                '<button class="remove btn btn-xs btn-danger"><i class="glyphicon glyphicon-remove"></i>删除</button>';
+                    { title: "同步数据库", field: "syncTarget" },
+                    { title: "身份证", field: "identificationId" },
+                    { title: "账号", field: "account" },
+                    { title: "密码", field: "password" },
+                    { title: "状态", field: "status" },
+                    { title: "同步时间", field: "syncTime", formatter: "date" }
+                    // ,
+                    // {
+                    //     title: "操作",
+                    //     align: "center",
+                    //     width: "200px",
+                    //     events: {
+                    //         'click .detail': function(e, value, row, index) {
+                    //             detail(row);
+                    //         },
+                    //         'click .remove': function(e, value, row, index) {
+                    //             remove(row);
+                    //         }
+                    //     },
+                    //     formatter: function operateFormatter(value, row, index) {
+                    //         return '<button class="detail btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>详情</button>' +
+                    //             '<button class="remove btn btn-xs btn-danger"><i class="glyphicon glyphicon-remove"></i>删除</button>';
 
-                        }
-                    }
+                    //     }
+                    // }
                 ]
             ],
             url: '/pcs/sync/personnel/find/page',

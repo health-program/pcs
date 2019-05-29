@@ -412,7 +412,7 @@ var _Model = function(name, column, options) {
 
                 // 每列对提交表单数据处理
                 for (var k = 0; k < that.columns.length; k++) {
-                	if (that.columns[k].editable === false) continue;
+                    if (that.columns[k].editable === false) continue;
                     if (that.columns[k].fieldBuilder.formDataHandler(that.columns[k], formData, that) === false) {
                         return false;
                     }
@@ -877,8 +877,8 @@ var _FieldBuilder = function(name, interfaces) {
                 required: required ? "required" : null
             }
 
-            if (options.attr) {
-                inputAttr = $.extend(inputAttr, options.attr);
+            if (column.attr) {
+                inputAttr = $.extend(inputAttr, column.attr);
             }
 
             html += generateTag("input", inputAttr);
@@ -954,11 +954,20 @@ var _numberFieldBuilder = new _FieldBuilder("NUMBER", {
         var colspan = column.colspan || 1,
             required = column.required === 'required';
 
+        var attr = {
+            placeholder: "请输入" + column.title
+        }
+
+        if (column.attr) {
+            attr = $.extend(attr, column.attr);
+        }
+
+
         var html = '<label for="' + column.name + '" class="col-sm-' + options.labelSize + ' control-label">' + this.getRequiredIcon(column, options) + column.title + '：</label>\n';
         html += '<div class="col-sm-' + this.getEditColSize(column, colspan, options) + '">\n';
         if (column.unit || column.unitIcon) {
             html += '<div class="input-group">';
-            html += '<input name="' + column.name + '" class="form-control" ' + (required ? 'required="required"' : '') + ' type="number" ' + generateTagAttribute(column.attr) + '></input>\n';
+            html += '<input name="' + column.name + '" class="form-control" ' + (required ? 'required="required"' : '') + ' type="number" ' + generateTagAttribute(attr) + '></input>\n';
             if (column.unitIcon) {
                 html += '<div class="input-group-addon">';
                 html += '       <i class="' + column.unitIcon + '"></i>';
@@ -968,7 +977,7 @@ var _numberFieldBuilder = new _FieldBuilder("NUMBER", {
             }
             html += '</div>';
         } else {
-            html += '<input name="' + column.name + '" type="number"></input>\n';
+            html += '<input name="' + column.name + '" class="form-control" ' + (required ? 'required="required"' : '') + ' type="number" ' + generateTagAttribute(attr) + '></input>\n';
         }
 
         html += '</div>\n';
@@ -1008,8 +1017,8 @@ var _textAreaFieldBuilder = new _FieldBuilder("TEXTAREA", {
             required: required ? "required" : null
         }
 
-        if (options.attr) {
-            inputAttr = $.extend(inputAttr, options.attr);
+        if (column.attr) {
+            inputAttr = $.extend(inputAttr, column.attr);
         }
 
         html += generateTag("textarea", inputAttr);
@@ -1064,8 +1073,8 @@ var _dateFieldBuilder = new _FieldBuilder("DATE", {
             required: required ? "required" : null
         }
 
-        if (options.attr) {
-            inputAttr = $.extend(inputAttr, options.attr);
+        if (column.attr) {
+            inputAttr = $.extend(inputAttr, column.attr);
         }
 
         html += generateTag("input", inputAttr);
@@ -1095,8 +1104,8 @@ var _timeFieldBuilder = new _FieldBuilder("TIME",
                 required: required ? "required" : null
             }
 
-            if (options.attr) {
-                inputAttr = $.extend(inputAttr, options.attr);
+            if (column.attr) {
+                inputAttr = $.extend(inputAttr, column.attr);
             }
 
             html += generateTag("input", inputAttr);
@@ -1198,8 +1207,8 @@ var _selectFieldBuilder = new _FieldBuilder("SELECT", {
             enumcode: column.enum
         }
 
-        if (options.attr) {
-            inputAttr = $.extend(inputAttr, options.attr);
+        if (column.attr) {
+            inputAttr = $.extend(inputAttr, column.attr);
         }
 
         html += '<select ' + generateTagAttribute(inputAttr) + '>\n';
@@ -1352,8 +1361,8 @@ var _selectServerFieldBuilder = new _FieldBuilder("SELECT-SERVER", {
             multiple: multiple ? 'multiple' : null
         }
 
-        if (options.attr) {
-            inputAttr = $.extend(inputAttr, options.attr);
+        if (column.attr) {
+            inputAttr = $.extend(inputAttr, column.attr);
         }
 
         html += '<select ' + generateTagAttribute(inputAttr) + '>\n';
@@ -1573,7 +1582,7 @@ var _attachmentFieldBuilder = new _FieldBuilder("ATTACHMENT", {
         var colspan = column.colspan || options.maxColspan,
             required = column.required === 'required';
         var html = '<label for="' + column.name + '" class="col-sm-' + options.labelSize + ' control-label">' + this.getRequiredIcon(column, options) + column.title + '：</label>\n';
-        var attrHtml = options.attr ? generateTagAttribute(options.attr) : "";
+        var attrHtml = column.attr ? generateTagAttribute(column.attr) : "";
         html += '<div name="' + column.name + '" class="col-sm-' + this.getEditColSize(column, colspan, options) + '" ' + attrHtml + '>\n';
         html += '<input type="file" name="' + column.fileName + '" ' + (column.maxFileCount === 1 ? '' : 'multiple') + '>\n';
         html += '</div>\n';
@@ -1643,7 +1652,7 @@ var _radioFieldBuilder = new _FieldBuilder("RADIO", {
             required = column.required === 'required';
         var html = '<label for="' + column.name + '" class="col-sm-' + options.labelSize + ' control-label">' + this.getRequiredIcon(column, options) + column.title + '：</label>\n';
         html += '<div class="col-sm-' + this.getEditColSize(column, colspan, options) + '">\n';
-        var attrHtml = options.attr ? generateTagAttribute(options.attr) : "";
+        var attrHtml = column.attr ? generateTagAttribute(column.attr) : "";
         html += '<div name="' + column.name + '" class="tonto-radio-constant" ' + (required ? 'required="required"' : '') + ' enumcode="' + column.enum + '" ' + attrHtml + '></div>\n';
         html += '</div>\n';
         return {
@@ -1728,7 +1737,7 @@ var _checkBoxFieldBuilder = new _FieldBuilder("CHECKBOX", {
             required = column.required === 'required';
         var html = '<label for="' + column.name + '" class="col-sm-' + options.labelSize + ' control-label">' + this.getRequiredIcon(column, options) + column.title + '：</label>\n';
         html += '<div class="col-sm-' + this.getEditColSize(column, colspan, options) + '">\n';
-        var attrHtml = options.attr ? generateTagAttribute(options.attr) : "";
+        var attrHtml = column.attr ? generateTagAttribute(column.attr) : "";
         html += '<div name="' + column.name + '" class="tonto-checkbox-constant" ' + (required ? 'required="required"' : '') + ' enumcode="' + column.enum + '" ' + attrHtml + '></div>\n';
         html += '</div>\n';
         return {
@@ -1781,7 +1790,7 @@ var _tagsinputFieldBuilder = new _FieldBuilder("TAGSINPUT", {
             required = column.required === 'required';
         var html = '<label for="' + column.name + '" class="col-sm-' + options.labelSize + ' control-label">' + this.getRequiredIcon(column, options) + column.title + '：</label>\n';
         html += '<div class="col-sm-' + this.getEditColSize(column, colspan, options) + '">\n';
-        var attrHtml = options.attr ? generateTagAttribute(options.attr) : "";
+        var attrHtml = column.attr ? generateTagAttribute(column.attr) : "";
         html += '<input name="' + column.name + '" type="text" class="form-control" data-role="tagsinput" placeholder="输入内容后回车" ' +
             (required ? 'required="required"' : '') + ' ' + attrHtml + '/>\n';
         html += '</div>\n';
