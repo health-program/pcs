@@ -4,22 +4,22 @@
 <head th:include="/pcs/header" />
 
 <body>
-    
+    <tt:constant enumcode="sync-status" />
     <section class="content-header">
-        <h1>同步人员模块</h1>
+        <h1>人员同步管理</h1>
     </section>
     <section class="content">
         <div class="box box-solid">
             <div class="box-body">
                 <form id="searchbar" class="form-horizontal form-search">
-                	<div class="form-group">
-	                    <div class="col-md-12">
-		                    <div class="pull-right">
-		                        <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
-		                        <button type="button" style="width:100px" class="btn btn-default" onclick="$('#searchbar').resetSearch()"><i class="fa fa-repeat"></i>重置</button>
-		                    </div>
-		                </div>
-	                </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <button type="button" style="width:100px" class="btn btn-primary tonto-btn-search" onclick="table.refresh()"><i class="fa fa-search"></i>查询</button>
+                                <button type="button" style="width:100px" class="btn btn-default" onclick="$('#searchbar').resetSearch()"><i class="fa fa-repeat"></i>重置</button>
+                            </div>
+                        </div>
+                    </div>
                     <!-- 表单仅有一个text-input时回车会提交表单，这里添加一个无用的防止回车提交 -->
                     <input type="text" style="display:none">
                 </form>
@@ -32,7 +32,7 @@
                 <table id="dataGrid"></table>
                 <div id="toolbar">
                     <div class="btn-group">
-                        <a onclick="add()" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i>新增</a>
+                        <a onclick="add()" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i>添加人员同步配置</a>
                     </div>
                 </div>
             </div>
@@ -50,12 +50,8 @@
             idField: "id",
             columns: [
                 [
-                    					{ title: "身份证域", field: "identificationIdField" },
-					{ title: "密码域", field: "passwordField" },
-					{ title: "更新时间域", field: "updateTimeField" },
-					{ title: "状态域", field: "statusField" },
-					{ title: "sql", field: "sql" },
-					{ title: "账号域", field: "accountField" },
+                    { title: "同步数据库", field: "name" },
+                    { title: "状态", field: "status", enumcode: "sync-status" },
                     {
                         title: "操作",
                         align: "center",
@@ -64,15 +60,20 @@
                             'click .detail': function(e, value, row, index) {
                                 detail(row);
                             },
+                            'click .sync': function(e, value, row, index) {
+                                sync(row);
+                            },
                             'click .remove': function(e, value, row, index) {
                                 remove(row);
                             }
                         },
                         formatter: function operateFormatter(value, row, index) {
                             return '<button class="detail btn btn-xs btn-info" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>详情</button>' +
+                                '<button class="sync btn btn-xs btn-success" style="margin-right:10px"><i class="glyphicon glyphicon-edit"></i>同步</button>' +
                                 '<button class="remove btn btn-xs btn-danger"><i class="glyphicon glyphicon-remove"></i>删除</button>';
 
                         }
+
                     }
                 ]
             ],
@@ -87,18 +88,55 @@
         });
     }
 
+    var index, intervalId;
+
+    function sync(row) {
+        $.getAjax('/pcs/sync/model/personnel/sync?name=' + row.name, function() {
+
+            if (intervalId) {
+                layer.close(index);
+                window.clearInterval(intervalId);
+                intervalId = null;
+                index = null;
+            }
+
+            index = layer.msg('数据同步中', {
+                time: 0,
+                icon: 15,
+                area: ['200px', '80px']
+            });
+
+            intervalId = window.setInterval(function() {
+                $.getAjax('/pcs/sync/model/personnel/running?name=' + row.name, function(data) {
+                    console.log(data);
+                    if (data !== true) {
+                        layer.close(index);
+                        window.clearInterval(intervalId);
+                        intervalId = null;
+                        index = null;
+                        layer.msg("数据同步完成");
+                    } else {
+
+                    }
+                });
+            }, 1000);
+        });
+
+    }
+
+
     function add() {
         window.location = '/pcs/sync/model/personnel/add';
     }
 
     function detail(row) {
-        window.location = '/pcs/sync/model/personnel/detail' + (row ? ('?id=' + row.id) : '');
+        window.location = '/pcs/sync/model/personnel/detail' + (row ? ('?id=' + row.name) : '');
     }
 
     function remove(row) {
         if (row) {
             layer.confirm('确定删除吗?', function() {
-                $.getAjax('/pcs/sync/model/personnel/delete?id=' + row.id, function() {
+                $.getAjax('/pcs/sync/model/personnel/delete?id=' + row.name, function() {
                     $.successMessage("删除成功");
                     table.refresh();
                 });

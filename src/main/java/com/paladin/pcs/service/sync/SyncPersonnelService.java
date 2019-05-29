@@ -10,7 +10,6 @@ import com.paladin.framework.core.copy.SimpleBeanCopier.SimpleBeanCopyUtil;
 import com.paladin.pcs.core.db.DeltaSyncProcessor;
 import com.paladin.pcs.core.db.SyncDataHandler;
 import com.paladin.pcs.core.db.impl.PersonnelAccount;
-import com.paladin.pcs.core.db.impl.PersonnelAccount.AccountStatus;
 import com.paladin.pcs.mapper.sync.SyncPersonnelMapper;
 import com.paladin.pcs.model.sync.SyncPersonnel;
 
@@ -25,14 +24,8 @@ public class SyncPersonnelService extends ServiceSupport<SyncPersonnel> implemen
 	public void saveData(PersonnelAccount pa) {
 		SyncPersonnel sp = new SyncPersonnel();
 		SimpleBeanCopyUtil.simpleCopy(pa, sp);
-
-		AccountStatus status = pa.getStatus();
-		if (status == AccountStatus.ENABLED) {
-			if (syncPersonnelMapper.updatePersonnel(sp) == 0) {
-				syncPersonnelMapper.insert(sp);
-			}
-		} else {
-			syncPersonnelMapper.deletePersonnel(sp);
+		if (syncPersonnelMapper.updatePersonnel(sp) == 0) {
+			syncPersonnelMapper.insert(sp);
 		}
 	}
 

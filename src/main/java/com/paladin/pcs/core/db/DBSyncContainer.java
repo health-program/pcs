@@ -22,6 +22,7 @@ import com.paladin.pcs.model.sync.SyncTarget;
 import com.paladin.pcs.service.sync.SyncTargetService;
 
 @Component
+@SuppressWarnings("rawtypes")
 public class DBSyncContainer implements SpringContainer {
 
 	@Autowired
@@ -64,24 +65,19 @@ public class DBSyncContainer implements SpringContainer {
 					environment.setUsername(target.getUsername());
 					environment.setPassword(target.getPassword());
 					environment.setPriorityLevel(target.getPriorityLevel());
-					environment.setStatus(target.getStatus());
 
-					DataBaseConfig config = new DataBaseConfig();
-					config.setName(target.getName());
-					config.setPassword(target.getPassword());
-					config.setType(DataBaseType.MYSQL);
-					config.setUrl(target.getUrl());
-					config.setUsername(target.getUsername());
+					Integer status = target.getStatus();
+					environment.setEnabled(status != null && status == SyncTarget.STATUS_ENABLED);
 
 					try {
-						DataBaseSource source = createDataBaseSource(config);
+						DataBaseSource source = createDataBaseSource(target);
 						environment.setDataBaseSource(source);
 						syncEnvironmentMap.put(name, environment);
 
-						for(DBSyncProcessorContainer container: syncProcessorContainerMap.values()) {
-							container.addProcessor(environment);
+						for (DBSyncProcessorContainer container : syncProcessorContainerMap.values()) {
+							container.addEnvironmentHandle(environment);
 						}
-												
+
 					} catch (Exception e) {
 						throw new BusinessException(e.getMessage());
 					}
@@ -92,7 +88,14 @@ public class DBSyncContainer implements SpringContainer {
 		return environment;
 	}
 
-	private DataBaseSource createDataBaseSource(DataBaseConfig config) {
+	private DataBaseSource createDataBaseSource(SyncTarget target) {
+
+		DataBaseConfig config = new DataBaseConfig();
+		config.setName(target.getName());
+		config.setPassword(target.getPassword());
+		config.setType(DataBaseType.MYSQL);
+		config.setUrl(target.getUrl());
+		config.setUsername(target.getUsername());
 
 		return new CommonDataBase(config) {
 
@@ -131,30 +134,70 @@ public class DBSyncContainer implements SpringContainer {
 		};
 	}
 
-	
+	public DBSyncEnvironment updateSyncEnvironment(SyncTarget target) {
+		String name = target.getName();
+		DBSyncEnvironment environment = syncEnvironmentMap.get(name);
+		if (environment != null) {
+			synchronized (syncEnvironmentMap) {
+				environment = syncEnvironmentMap.get(name);
+				if (environment != null) {
+					try {
+						DataBaseSource oldSource = environment.getDataBaseSource();
+						DataBaseSource newSource = createDataBaseSource(target);
+						environment.setDataBaseSource(newSource);
+						syncEnvironmentMap.put(name, environment);
+
+						if (oldSource != null) {
+							oldSource.close();
+						}
+
+						for (DBSyncProcessorContainer container : syncProcessorContainerMap.values()) {
+							container.updateEnvironmentHandle(environment);
+						}
+					} catch (Exception e) {
+						throw new BusinessException(e.getMessage());
+					}
+				}
+			}
+		}
+		return environment;
+	}
+
 	public DBSyncEnvironment removeSyncEnvironment(String name) {
 		DBSyncEnvironment environment = syncEnvironmentMap.get(name);
 		if (environment != null) {
 			synchronized (syncEnvironmentMap) {
 				environment = syncEnvironmentMap.get(name);
 				if (environment != null) {
-					for(DBSyncProcessorContainer container: syncProcessorContainerMap.values()) {
-						container.removeProcessor(environment);
+					for (DBSyncProcessorContainer container : syncProcessorContainerMap.values()) {
+						container.removeEnvironmentHandle(environment);
 					}
 					syncEnvironmentMap.remove(name);
+					DataBaseSource source = environment.getDataBaseSource();
+					if (source != null) {
+						source.close();
+					}
 					return environment;
 				}
 			}
 		}
 		return null;
 	}
-	
+
 	public DBSyncEnvironment getSyncEnvironment(String name) {
 		return syncEnvironmentMap.get(name);
 	}
-	
-	public DBSyncProcessorContainer getSyncProcessorContainer(String id) {
-		return syncProcessorContainerMap.get(id);
+
+	public DBSyncProcessorContainer getSyncProcessorContainer(String model) {
+		return syncProcessorContainerMap.get(model);
+	}
+
+	public DBSyncProcessor getSyncProcessor(String name, String model) {
+		DBSyncProcessorContainer container = syncProcessorContainerMap.get(model);
+		if (container != null) {
+			return container.getProcessor(name);
+		}
+		return null;
 	}
 
 	public static class DBSyncEnvironment {
@@ -164,7 +207,7 @@ public class DBSyncContainer implements SpringContainer {
 		private String username;
 		private String password;
 		private Integer priorityLevel;
-		private Integer status;
+		private boolean enabled;
 
 		private DataBaseSource dataBaseSource;
 
@@ -208,20 +251,20 @@ public class DBSyncContainer implements SpringContainer {
 			this.priorityLevel = priorityLevel;
 		}
 
-		public Integer getStatus() {
-			return status;
-		}
-
-		public void setStatus(Integer status) {
-			this.status = status;
-		}
-
 		public DataBaseSource getDataBaseSource() {
 			return dataBaseSource;
 		}
 
 		public void setDataBaseSource(DataBaseSource dataBaseSource) {
 			this.dataBaseSource = dataBaseSource;
+		}
+
+		public boolean isEnabled() {
+			return enabled;
+		}
+
+		public void setEnabled(boolean enabled) {
+			this.enabled = enabled;
 		}
 	}
 

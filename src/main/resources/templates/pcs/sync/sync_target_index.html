@@ -4,9 +4,9 @@
 <head th:include="/pcs/header" />
 
 <body>
-    
+    <tt:constant enumcode="sync-status"/>
     <section class="content-header">
-        <h1>同步目标</h1>
+        <h1>同步数据库管理</h1>
     </section>
     <section class="content">
         <div class="box box-solid">
@@ -32,7 +32,7 @@
                 <table id="dataGrid"></table>
                 <div id="toolbar">
                     <div class="btn-group">
-                        <a onclick="add()" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i>新增</a>
+                        <a onclick="add()" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i>添加数据库</a>
                     </div>
                 </div>
             </div>
@@ -50,10 +50,12 @@
             idField: "id",
             columns: [
                 [
-                    					{ title: "同步数据库密码", field: "password" },
-					{ title: "同步优先级", field: "priorityLevel" },
+                	{ title: "同步数据库名称", field: "name" },
 					{ title: "同步数据库地址", field: "url" },
 					{ title: "同步数据库用户名", field: "username" },
+                    { title: "同步数据库密码", field: "password" },
+					{ title: "同步优先级", field: "priorityLevel" },
+					{ title: "状态", field: "status", enumcode:"sync-status" },
                     {
                         title: "操作",
                         align: "center",
@@ -90,13 +92,13 @@
     }
 
     function detail(row) {
-        window.location = '/pcs/sync/target/detail' + (row ? ('?id=' + row.id) : '');
+        window.location = '/pcs/sync/target/detail' + (row ? ('?id=' + row.name) : '');
     }
 
     function remove(row) {
         if (row) {
             layer.confirm('确定删除吗?', function() {
-                $.getAjax('/pcs/sync/target/delete?id=' + row.id, function() {
+                $.getAjax('/pcs/sync/target/delete?id=' + row.name, function() {
                     $.successMessage("删除成功");
                     table.refresh();
                 });

@@ -2,6 +2,7 @@ package com.paladin.pcs.controller.sync;
 
 import com.paladin.pcs.controller.sync.dto.SyncTargetExportCondition;
 import com.paladin.pcs.model.sync.SyncTarget;
+import com.paladin.pcs.service.sync.SyncDataService;
 import com.paladin.pcs.service.sync.SyncTargetService;
 import com.paladin.pcs.service.sync.dto.SyncTargetQuery;
 import com.paladin.pcs.service.sync.dto.SyncTargetDTO;
@@ -13,7 +14,6 @@ import com.paladin.framework.core.query.QueryInputMethod;
 import com.paladin.framework.core.query.QueryOutputMethod;
 import com.paladin.framework.excel.write.ExcelWriteException;
 import com.paladin.framework.web.response.CommonResponse;
-import com.paladin.framework.utils.uuid.UUIDUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,11 +37,20 @@ public class SyncTargetController extends ControllerSupport {
 
     @Autowired
     private SyncTargetService syncTargetService;
-
+    
+    @Autowired
+    private SyncDataService syncDataService;
+    
     @GetMapping("/index")
     @QueryInputMethod(queryClass = SyncTargetQuery.class)
     public String index() {
         return "/pcs/sync/sync_target_index";
+    }
+    
+    @RequestMapping(value = "/find/all", method = { RequestMethod.GET, RequestMethod.POST })
+    @ResponseBody
+    public Object findAll() {
+        return CommonResponse.getSuccessResponse(syncTargetService.findAll());
     }
 
     @RequestMapping(value = "/find/page", method = { RequestMethod.GET, RequestMethod.POST })
@@ -74,11 +83,10 @@ public class SyncTargetController extends ControllerSupport {
 		if (bindingResult.hasErrors()) {
 			return validErrorHandler(bindingResult);
 		}
+		String name = syncTargetDTO.getName();
         SyncTarget model = beanCopy(syncTargetDTO, new SyncTarget());
-		String id = UUIDUtil.createUUID();
-		model.setName(id);
-		if (syncTargetService.save(model) > 0) {
-			return CommonResponse.getSuccessResponse(beanCopy(syncTargetService.get(id), new SyncTargetVO()));
+		if (syncDataService.saveSyncTarget(model)) {
+			return CommonResponse.getSuccessResponse(beanCopy(syncTargetService.get(name), new SyncTargetVO()));
 		}
 		return CommonResponse.getFailResponse();
 	}
@@ -89,10 +97,10 @@ public class SyncTargetController extends ControllerSupport {
 		if (bindingResult.hasErrors()) {
 			return validErrorHandler(bindingResult);
 		}
-		String id = syncTargetDTO.getName();
-		SyncTarget model = beanCopy(syncTargetDTO, syncTargetService.get(id));
-		if (syncTargetService.update(model) > 0) {
-			return CommonResponse.getSuccessResponse(beanCopy(syncTargetService.get(id), new SyncTargetVO()));
+		String name = syncTargetDTO.getName();
+		SyncTarget model = beanCopy(syncTargetDTO, syncTargetService.get(name));
+		if (syncDataService.updateSyncTarget(model)) {
+			return CommonResponse.getSuccessResponse(beanCopy(syncTargetService.get(name), new SyncTargetVO()));
 		}
 		return CommonResponse.getFailResponse();
 	}
@@ -100,7 +108,7 @@ public class SyncTargetController extends ControllerSupport {
     @RequestMapping(value = "/delete", method = { RequestMethod.GET, RequestMethod.POST })
     @ResponseBody
     public Object delete(@RequestParam String id) {
-        return CommonResponse.getResponse(syncTargetService.removeByPrimaryKey(id));
+        return CommonResponse.getResponse(syncDataService.removeSyncTarget(id));
     }
     
     @PostMapping(value = "/export")

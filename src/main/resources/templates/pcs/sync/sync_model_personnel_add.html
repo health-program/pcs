@@ -4,45 +4,55 @@
 <head th:include="/pcs/header" />
 
 <body>
-    
+    <tt:constant enumcode="sync-status"/>
     <section class="content-header">
-        <h1>同步人员模块</h1>
+        <h1>人员同步管理</h1>
         <ol class="breadcrumb">
-            <li><a href="/pcs/sync/model/personnel/index"><i class="fa fa-table"></i>列表</a></li>
-            <li class="active">新增</li>
+            <li><a href="/pcs/sync/model/personnel/index"><i class="fa fa-table"></i>配置列表</a></li>
+            <li class="active">添加配置</li>
         </ol>
     </section>
     <section class="content">
     </section>
     <div class="col-sm-2 col-sm-offset-5 btn-back">
-    	<a href="/pcs/sync/model/personnel/index" class="btn btn-primary btn-block">返回</a>
+        <a href="/pcs/sync/model/personnel/index" class="btn btn-primary btn-block">返回</a>
     </div>
     <div th:include="/pcs/footer" />
     <script type="text/javascript">
     var options = {
         id: "model",
         cancelBtn: false,
-        name: "新增",
-        url:"/pcs/sync/model/personnel/save",
-        columns: [
-				{ title: "sql", name: "sql", required: "required", inputType: "TEXT" },
-				{ title: "身份证域", name: "identificationIdField", inputType: "TEXT" },
-				{ title: "账号域", name: "accountField", inputType: "TEXT" },
-				{ title: "密码域", name: "passwordField", inputType: "TEXT" },
-				{ title: "更新时间域", name: "updateTimeField", inputType: "TEXT" },
-				{ title: "状态域", name: "statusField", inputType: "TEXT" }
-				]
+        name: "添加人员同步配置",
+        url: "/pcs/sync/model/personnel/save",
+        columns: [{
+                title: "同步数据库",
+                name: "name",
+                required: "required",
+                inputType: "SELECT-SERVER",
+                url: "/pcs/sync/target/find/all",
+                idField: "name",
+                nameField: "name",
+                multiple: false
+            },
+            { title: "sql", name: "searchSql", required: "required", inputType: "TEXTAREA", colspan:2 },
+            { title: "身份证域", name: "identificationIdField", inputType: "TEXT" },
+            { title: "账号域", name: "accountField", inputType: "TEXT" },
+            { title: "密码域", name: "passwordField", inputType: "TEXT" },
+            { title: "更新时间域", name: "updateTimeField", inputType: "TEXT" },
+            { title: "状态域", name: "statusField", inputType: "TEXT" },
+            { title: "状态", name: "status", inputType: "RADIO", enum: "sync-status" }
+        ]
     }
 
-    $(function() {       
+    $(function() {
         var html = generateEditHtml(options);
         $(".content").html(html);
-       	$.initComponment($(".content"));
-        
+        $.initComponment($(".content"));
+
         var model = new tonto.Model("model", options.columns, {
-            pattern:"edit",
-            successCallback:function(){
-                $.successAlert("保存成功",function(){
+            pattern: "edit",
+            successCallback: function() {
+                $.successAlert("保存成功", function() {
                     window.location = "/pcs/sync/model/personnel/index";
                 });
             }

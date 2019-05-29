@@ -11,7 +11,7 @@ public class SyncModelPersonnel {
 	private String name;
 
 	// 
-	private String sql;
+	private String searchSql;
 
 	// 身份证域
 	private String identificationIdField;
@@ -40,14 +40,6 @@ public class SyncModelPersonnel {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getSql() {
-		return sql;
-	}
-
-	public void setSql(String sql) {
-		this.sql = sql;
 	}
 
 	public String getIdentificationIdField() {
@@ -104,6 +96,14 @@ public class SyncModelPersonnel {
 
 	public void setLastSyncTime(Date lastSyncTime) {
 		this.lastSyncTime = lastSyncTime;
+	}
+
+	public String getSearchSql() {
+		return searchSql;
+	}
+
+	public void setSearchSql(String searchSql) {
+		this.searchSql = searchSql;
 	}
 
 }

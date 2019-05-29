@@ -20,6 +20,7 @@ public class SyncExceptionService extends ServiceSupport<SyncException> implemen
 		exception.setId(UUIDUtil.createUUID());
 		exception.setSyncTarget(name);
 		exception.setSyncModel(model);
+		exception.setSyncTime(syncTime);
 
 		String contentStr = null;
 		if (content != null) {
@@ -38,6 +39,6 @@ public class SyncExceptionService extends ServiceSupport<SyncException> implemen
 	}
 
 	private String substring(String str, int max) {
-		return str != null ? str.substring(0, max) : null;
+		return str != null ? (str.length() <= max ? str : str.substring(0, max)) : null;
 	}
 }

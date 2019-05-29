@@ -15,6 +15,9 @@ public class SyncPersonnel {
 
 	// md5密码
 	private String password;
+	
+	// 状态
+	private String status;
 
 	// 更新时间（目标数据库中）
 	private Date updateTime;
@@ -71,6 +74,14 @@ public class SyncPersonnel {
 
 	public void setSyncTarget(String syncTarget) {
 		this.syncTarget = syncTarget;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

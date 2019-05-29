@@ -1,7 +1,9 @@
 package com.paladin.pcs.controller.sync;
 
 import com.paladin.pcs.controller.sync.dto.SyncModelPersonnelExportCondition;
+import com.paladin.pcs.core.db.impl.PersonnelSyncProcessorContainer;
 import com.paladin.pcs.model.sync.SyncModelPersonnel;
+import com.paladin.pcs.service.sync.SyncDataService;
 import com.paladin.pcs.service.sync.SyncModelPersonnelService;
 import com.paladin.pcs.service.sync.dto.SyncModelPersonnelQuery;
 import com.paladin.pcs.service.sync.dto.SyncModelPersonnelDTO;
@@ -13,7 +15,6 @@ import com.paladin.framework.core.query.QueryInputMethod;
 import com.paladin.framework.core.query.QueryOutputMethod;
 import com.paladin.framework.excel.write.ExcelWriteException;
 import com.paladin.framework.web.response.CommonResponse;
-import com.paladin.framework.utils.uuid.UUIDUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,75 +36,93 @@ import javax.validation.Valid;
 @RequestMapping("/pcs/sync/model/personnel")
 public class SyncModelPersonnelController extends ControllerSupport {
 
-    @Autowired
-    private SyncModelPersonnelService syncModelPersonnelService;
+	@Autowired
+	private SyncModelPersonnelService syncModelPersonnelService;
 
-    @GetMapping("/index")
-    @QueryInputMethod(queryClass = SyncModelPersonnelQuery.class)
-    public String index() {
-        return "/pcs/sync/sync_model_personnel_index";
-    }
+	@Autowired
+	private SyncDataService syncDataService;
 
-    @RequestMapping(value = "/find/page", method = { RequestMethod.GET, RequestMethod.POST })
-    @ResponseBody
-    @QueryOutputMethod(queryClass = SyncModelPersonnelQuery.class, paramIndex = 0)
-    public Object findPage(SyncModelPersonnelQuery query) {
-        return CommonResponse.getSuccessResponse(syncModelPersonnelService.searchPage(query));
-    }
-    
-    @GetMapping("/get")
-    @ResponseBody
-    public Object getDetail(@RequestParam String id, Model model) {   	
-        return CommonResponse.getSuccessResponse(beanCopy(syncModelPersonnelService.get(id), new SyncModelPersonnelVO()));
-    }
-    
-    @GetMapping("/add")
-    public String addInput() {
-        return "/pcs/sync/sync_model_personnel_add";
-    }
+	@GetMapping("/index")
+	@QueryInputMethod(queryClass = SyncModelPersonnelQuery.class)
+	public String index() {
+		return "/pcs/sync/sync_model_personnel_index";
+	}
 
-    @GetMapping("/detail")
-    public String detailInput(@RequestParam String id, Model model) {
-    	model.addAttribute("id", id);
-        return "/pcs/sync/sync_model_personnel_detail";
-    }
-    
-    @PostMapping("/save")
+	@RequestMapping(value = "/find/page", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
-    public Object save(@Valid SyncModelPersonnelDTO syncModelPersonnelDTO, BindingResult bindingResult) {
+	@QueryOutputMethod(queryClass = SyncModelPersonnelQuery.class, paramIndex = 0)
+	public Object findPage(SyncModelPersonnelQuery query) {
+		return CommonResponse.getSuccessResponse(syncModelPersonnelService.searchPage(query));
+	}
+
+	@GetMapping("/get")
+	@ResponseBody
+	public Object getDetail(@RequestParam String id, Model model) {
+		return CommonResponse.getSuccessResponse(beanCopy(syncModelPersonnelService.get(id), new SyncModelPersonnelVO()));
+	}
+
+	@GetMapping("/add")
+	public String addInput() {
+		return "/pcs/sync/sync_model_personnel_add";
+	}
+
+	@GetMapping("/detail")
+	public String detailInput(@RequestParam String id, Model model) {
+		model.addAttribute("id", id);
+		return "/pcs/sync/sync_model_personnel_detail";
+	}
+
+	@PostMapping("/save")
+	@ResponseBody
+	public Object save(@Valid SyncModelPersonnelDTO syncModelPersonnelDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return validErrorHandler(bindingResult);
 		}
-        SyncModelPersonnel model = beanCopy(syncModelPersonnelDTO, new SyncModelPersonnel());
-		String id = UUIDUtil.createUUID();
-		model.setName(id);
-		if (syncModelPersonnelService.save(model) > 0) {
-			return CommonResponse.getSuccessResponse(beanCopy(syncModelPersonnelService.get(id), new SyncModelPersonnelVO()));
+		SyncModelPersonnel model = beanCopy(syncModelPersonnelDTO, new SyncModelPersonnel());
+		if (syncDataService.saveSyncModelPersonnel(model)) {
+			return CommonResponse.getSuccessResponse(beanCopy(syncModelPersonnelService.get(model.getName()), new SyncModelPersonnelVO()));
 		}
 		return CommonResponse.getFailResponse();
 	}
 
-    @PostMapping("/update")
+	@PostMapping("/update")
 	@ResponseBody
-    public Object update(@Valid SyncModelPersonnelDTO syncModelPersonnelDTO, BindingResult bindingResult) {
+	public Object update(@Valid SyncModelPersonnelDTO syncModelPersonnelDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return validErrorHandler(bindingResult);
 		}
-		String id = syncModelPersonnelDTO.getName();
-		SyncModelPersonnel model = beanCopy(syncModelPersonnelDTO, syncModelPersonnelService.get(id));
-		if (syncModelPersonnelService.update(model) > 0) {
-			return CommonResponse.getSuccessResponse(beanCopy(syncModelPersonnelService.get(id), new SyncModelPersonnelVO()));
+		SyncModelPersonnel model = beanCopy(syncModelPersonnelDTO, syncModelPersonnelService.get(syncModelPersonnelDTO.getName()));
+		if (syncDataService.updateSyncModelPersonnel(model)) {
+			return CommonResponse.getSuccessResponse(beanCopy(syncModelPersonnelService.get(model.getName()), new SyncModelPersonnelVO()));
 		}
 		return CommonResponse.getFailResponse();
 	}
 
-    @RequestMapping(value = "/delete", method = { RequestMethod.GET, RequestMethod.POST })
-    @ResponseBody
-    public Object delete(@RequestParam String id) {
-        return CommonResponse.getResponse(syncModelPersonnelService.removeByPrimaryKey(id));
-    }
-    
-    @PostMapping(value = "/export")
+	@RequestMapping(value = "/delete", method = { RequestMethod.GET, RequestMethod.POST })
+	@ResponseBody
+	public Object delete(@RequestParam String id) {
+		return CommonResponse.getResponse(syncDataService.removeSyncModelPersonnel(id));
+	}
+
+	@PostMapping("/update/status")
+	@ResponseBody
+	public Object updateStatus(@RequestParam String name, @RequestParam Integer status) {
+		return CommonResponse.getResponse(syncDataService.updateProcessorStatus(name, PersonnelSyncProcessorContainer.ID, status));
+	}
+
+	@GetMapping("/sync")
+	@ResponseBody
+	public Object sync(@RequestParam String name) {
+		return CommonResponse.getResponse(syncDataService.syncData(name, PersonnelSyncProcessorContainer.ID));
+	}
+	
+	@GetMapping("/running")
+	@ResponseBody
+	public Object isRunning(@RequestParam String name) {
+		return CommonResponse.getSuccessResponse(syncDataService.isProcessorRunning(name, PersonnelSyncProcessorContainer.ID));
+	}
+
+	@PostMapping(value = "/export")
 	@ResponseBody
 	public Object export(@RequestBody SyncModelPersonnelExportCondition condition) {
 		if (condition == null) {
@@ -114,7 +133,8 @@ public class SyncModelPersonnelController extends ControllerSupport {
 		try {
 			if (query != null) {
 				if (condition.isExportAll()) {
-					return CommonResponse.getSuccessResponse("success", ExportUtil.export(condition, syncModelPersonnelService.searchAll(query), SyncModelPersonnel.class));
+					return CommonResponse.getSuccessResponse("success",
+							ExportUtil.export(condition, syncModelPersonnelService.searchAll(query), SyncModelPersonnel.class));
 				} else if (condition.isExportPage()) {
 					return CommonResponse.getSuccessResponse("success",
 							ExportUtil.export(condition, syncModelPersonnelService.searchPage(query).getData(), SyncModelPersonnel.class));

@@ -9,7 +9,6 @@ import java.util.List;
 import com.paladin.framework.core.exception.BusinessException;
 
 import com.paladin.pcs.core.db.DeltaSyncProcessor;
-import com.paladin.pcs.core.db.impl.PersonnelAccount.AccountStatus;
 import com.paladin.pcs.model.sync.SyncModelPersonnel;
 
 public class PersonnelSyncProcessor extends DeltaSyncProcessor<PersonnelAccount> {
@@ -21,8 +20,10 @@ public class PersonnelSyncProcessor extends DeltaSyncProcessor<PersonnelAccount>
 	private String statusField = "status";
 
 	public PersonnelSyncProcessor(String name, String model, SyncModelPersonnel syncModelPersonnel) {
-		super(name, model, syncModelPersonnel.getSql(), syncModelPersonnel.getLastSyncTime());
-
+		super(name, model, syncModelPersonnel.getSearchSql(), syncModelPersonnel.getLastSyncTime());
+		
+		
+		
 		this.identificationIdField = syncModelPersonnel.getIdentificationIdField();
 		this.accountField = syncModelPersonnel.getAccountField();
 		this.passwordField = syncModelPersonnel.getPasswordField();
@@ -57,7 +58,7 @@ public class PersonnelSyncProcessor extends DeltaSyncProcessor<PersonnelAccount>
 				pa.setPassword(password);
 				pa.setUpdateTime(updateTime);
 				pa.setSyncTime(getLastSyncTime());
-				pa.setStatus(AccountStatus.valueOf(status));
+				pa.setStatus(status);
 				pa.setSyncTarget(getName());
 
 				result.add(pa);
@@ -94,6 +95,17 @@ public class PersonnelSyncProcessor extends DeltaSyncProcessor<PersonnelAccount>
 	@Override
 	public String getModel() {
 		return "personnel";
+	}
+
+	public void updateConfig(SyncModelPersonnel syncModelPersonnel) {
+		this.setSql(syncModelPersonnel.getSearchSql());
+		this.setLastSyncTime(syncModelPersonnel.getLastSyncTime());
+		
+		this.identificationIdField = syncModelPersonnel.getIdentificationIdField();
+		this.accountField = syncModelPersonnel.getAccountField();
+		this.passwordField = syncModelPersonnel.getPasswordField();
+		this.updateTimeField = syncModelPersonnel.getUpdateTimeField();
+		this.statusField = syncModelPersonnel.getStatusField();
 	}
 
 }

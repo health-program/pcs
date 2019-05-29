@@ -1,5 +1,6 @@
 package com.paladin.pcs.service.sync.vo;
 
+import java.util.Date;
 
 public class SyncModelPersonnelVO {
 
@@ -7,7 +8,7 @@ public class SyncModelPersonnelVO {
 	private String name;
 
 	// 
-	private String sql;
+	private String searchSql;
 
 	// 身份证域
 	private String identificationIdField;
@@ -26,6 +27,9 @@ public class SyncModelPersonnelVO {
 	
 	// 启用状态
 	private Integer status;
+	
+	// 最近同步时间
+	private Date lastSyncTime;
 
 	public String getName() {
 		return name;
@@ -33,14 +37,6 @@ public class SyncModelPersonnelVO {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getSql() {
-		return sql;
-	}
-
-	public void setSql(String sql) {
-		this.sql = sql;
 	}
 
 	public String getIdentificationIdField() {
@@ -89,6 +85,22 @@ public class SyncModelPersonnelVO {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public String getSearchSql() {
+		return searchSql;
+	}
+
+	public void setSearchSql(String searchSql) {
+		this.searchSql = searchSql;
+	}
+
+	public Date getLastSyncTime() {
+		return lastSyncTime;
+	}
+
+	public void setLastSyncTime(Date lastSyncTime) {
+		this.lastSyncTime = lastSyncTime;
 	}
 
 }

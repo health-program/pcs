@@ -1,13 +1,16 @@
 package com.paladin.pcs.service.sync.dto;
 
+import javax.validation.constraints.NotEmpty;
 
 public class SyncModelPersonnelDTO {
 
 	// 同步数据库名称
+	@NotEmpty(message="数据库名称不能为空")
 	private String name;
 
 	// 
-	private String sql;
+	@NotEmpty(message="查询SQL语句不能为空")
+	private String searchSql;
 
 	// 身份证域
 	private String identificationIdField;
@@ -23,6 +26,9 @@ public class SyncModelPersonnelDTO {
 
 	// 状态域
 	private String statusField;
+	
+	// 启用状态
+	private Integer status;
 
 	public String getName() {
 		return name;
@@ -30,14 +36,6 @@ public class SyncModelPersonnelDTO {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getSql() {
-		return sql;
-	}
-
-	public void setSql(String sql) {
-		this.sql = sql;
 	}
 
 	public String getIdentificationIdField() {
@@ -78,6 +76,22 @@ public class SyncModelPersonnelDTO {
 
 	public void setStatusField(String statusField) {
 		this.statusField = statusField;
+	}
+
+	public String getSearchSql() {
+		return searchSql;
+	}
+
+	public void setSearchSql(String searchSql) {
+		this.searchSql = searchSql;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 }

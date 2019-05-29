@@ -4,12 +4,12 @@
 <head th:include="/pcs/header" />
 
 <body>
-    
+    <tt:constant enumcode="sync-status"/>
     <section class="content-header">
-        <h1>同步目标</h1>
+        <h1>同步数据库管理</h1>
         <ol class="breadcrumb">
-            <li><a href="/pcs/sync/target/index"><i class="fa fa-table"></i>列表</a></li>
-            <li class="active">新增</li>
+            <li><a href="/pcs/sync/target/index"><i class="fa fa-table"></i>数据库列表</a></li>
+            <li class="active">添加数据库</li>
         </ol>
     </section>
     <section class="content">
@@ -22,13 +22,15 @@
     var options = {
         id: "model",
         cancelBtn: false,
-        name: "新增",
+        name: "添加数据库",
         url:"/pcs/sync/target/save",
         columns: [
+                { title: "同步数据库名称", name: "name", required: "required", inputType: "TEXT" },
 				{ title: "同步数据库地址", name: "url", required: "required", inputType: "TEXT" },
 				{ title: "同步数据库用户名", name: "username", required: "required", inputType: "TEXT" },
-				{ title: "同步数据库密码", name: "password", required: "required", inputType: "TEXT" },
-				{ title: "同步优先级", name: "priorityLevel", inputType: "TEXT" }
+				{ title: "同步数据库密码", name: "password", inputType: "TEXT" },
+                { title: "同步状态", name: "status", inputType: "RADIO", enum:"sync-status" },
+				{ title: "同步优先级", name: "priorityLevel", inputType: "NUMBER" }
 				]
     }
 

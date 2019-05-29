@@ -9,7 +9,7 @@ public class PersonnelAccount {
 	private String password;
 	private Date updateTime;
 	private Date syncTime;
-	private AccountStatus status;
+	private String status;
 
 	public String getIdentificationId() {
 		return identificationId;
@@ -51,14 +51,6 @@ public class PersonnelAccount {
 		return updateTime;
 	}
 
-	public AccountStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(AccountStatus status) {
-		this.status = status;
-	}
-
 	public String getSyncTarget() {
 		return syncTarget;
 	}
@@ -66,9 +58,13 @@ public class PersonnelAccount {
 	public void setSyncTarget(String syncTarget) {
 		this.syncTarget = syncTarget;
 	}
-	
-	public static enum AccountStatus {
-		ENABLED, STOP, DELETE;
+
+	public String getStatus() {
+		return status;
 	}
 
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
 }

@@ -2,32 +2,71 @@ package com.paladin.pcs.core.db;
 
 import com.paladin.pcs.core.db.DBSyncContainer.DBSyncEnvironment;
 
-public interface DBSyncProcessorContainer {
+public interface DBSyncProcessorContainer<T> {
 
 	/**
 	 * 获取容器ID
+	 * 
 	 * @return
 	 */
 	public String getId();
 
 	/**
-	 * 添加一个处理器
+	 * 新增环境处理
 	 * 
 	 * @param environment
 	 */
-	public DBSyncProcessor addProcessor(DBSyncEnvironment environment);
+	public void addEnvironmentHandle(DBSyncEnvironment environment);
 
 	/**
-	 * 移除处理器
+	 * 更新环境处理
 	 * 
 	 * @param environment
 	 */
-	public DBSyncProcessor removeProcessor(DBSyncEnvironment environment);
+	public void updateEnvironmentHandle(DBSyncEnvironment environment);
+
+	/**
+	 * 移除环境处理
+	 * 
+	 * @param environment
+	 */
+	public void removeEnvironmentHandle(DBSyncEnvironment environment);
+
+	/**
+	 * 设置环境状态处理
+	 * 
+	 * @param environment
+	 */
+	public void setEnvironmentEnabledHandle(DBSyncEnvironment environment);
 
 	/**
 	 * 获取处理器
 	 * 
-	 * @param environment
+	 * @param name
 	 */
-	public DBSyncProcessor getProcessor(DBSyncEnvironment environment);
+	public DBSyncProcessor getProcessor(String name);
+	
+	/**
+	 * 新增处理器
+	 * @param config
+	 * @return
+	 */
+	public DBSyncProcessor addProcessor(DBSyncEnvironment environment);
+	
+	/**
+	 * 更新处理器
+	 * @param config
+	 * @return
+	 */
+	public DBSyncProcessor updateProcessor(DBSyncEnvironment environment);
+	
+	/**
+	 * 删除处理器
+	 * @param name
+	 * @return
+	 */
+	public DBSyncProcessor removeProcessor(String name);
+	
+
+
 }

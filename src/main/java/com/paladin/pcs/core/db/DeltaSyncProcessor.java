@@ -15,7 +15,7 @@ public abstract class DeltaSyncProcessor<T> extends DBSyncProcessor {
 	private SyncExceptionHandler syncExceptionHandler;
 	private SyncRecordHandler syncRecordHandler;
 	private SyncDataHandler<T> syncDataHandler;
-
+	
 	public DeltaSyncProcessor(String name, String model, String sql, Date lastSyncTime) {
 		super(name, model);
 		this.sql = sql;
@@ -84,11 +84,19 @@ public abstract class DeltaSyncProcessor<T> extends DBSyncProcessor {
 	public String getSql() {
 		return sql;
 	}
+	
+	public void setSql(String sql) {
+		this.sql = sql;
+	}
 
 	public Date getLastSyncTime() {
 		return lastSyncTime;
 	}
 
+	public void setLastSyncTime(Date lastSyncTime) {
+		this.lastSyncTime = lastSyncTime;
+	}
+	
 	public SyncExceptionHandler getSyncExceptionHandler() {
 		return syncExceptionHandler;
 	}
@@ -112,5 +120,6 @@ public abstract class DeltaSyncProcessor<T> extends DBSyncProcessor {
 	public void setSyncRecordHandler(SyncRecordHandler syncRecordHandler) {
 		this.syncRecordHandler = syncRecordHandler;
 	}
+
 
 }

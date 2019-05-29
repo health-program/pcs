@@ -3,7 +3,10 @@ package com.paladin.pcs.model.sync;
 import javax.persistence.Id;
 
 public class SyncTarget {
-
+	
+	public static final int STATUS_ENABLED =1;
+	public static final int STATUS_STOP =-1;
+	
 	// 同步数据库名称
 	@Id
 	private String name;
