@@ -94,6 +94,24 @@ public class ConstantsContainer implements VersionContainer {
 	public static List<KeyValue> getType(String typeCode) {
 		return constantMap.get(typeCode);
 	}
+	public static List<KeyValue> getTypes(String typeCode, String...keys) {
+		if(keys != null && keys.length >0) {
+			List<KeyValue> typeList = constantMap.get(typeCode);		
+			if(typeList != null ) {
+				List<KeyValue> result = new ArrayList<>(keys.length);
+				for(String key:keys) {
+					for(KeyValue kv : typeList) {
+						if(kv.getKey().equals(key)) {
+							result.add(kv);
+							break;
+						}
+					}
+				}
+				return result;
+			}
+		}
+		return null;	
+	}
 
 	/**
 	 * 根据类型和名称得到常量KEY
