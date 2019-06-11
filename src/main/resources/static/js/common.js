@@ -1,5 +1,5 @@
 // 需要修改
-var $global_project = "demo";
+var $global_project = "health";
 
 (function($) {
 
